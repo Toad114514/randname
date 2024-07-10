@@ -1,5 +1,6 @@
 # Randname
-稿级的 Python3 终端抽名程序，支持抽名和其他功能
+稿级的 Python3 终端抽名程序，支持抽名和其他功能<br>
+[English](https://github.com/Toad114514/randname/blob/main/readme_en.md)
 # Feature
  - 轻量简洁
  - 本地列表存储
