@@ -20,12 +20,14 @@ import ct
 # v1.06b 优化列表查看 加入所有列表提示
 # v1.07b 通过 colortext 库优化输出
 # v1.08b 新增跳过随机动画选项
-# v1.09b 
+# v1.09b 新增暗箱操作
+# 2024.7.13
+# v1.10b 优化主程序 loop (不使用 while)
 
 print('''
 随机点名系统
 By Toad114514
-v1.09b
+v1.10b
 ''')
 
 time.sleep(1)
@@ -47,6 +49,8 @@ list = []
 # 配置 class
 class option():
 	skip_random_animation = False
+	black_box_value = ""
+	black_box_back = False
 
 # 保存列表位置
 def save_config(sendlist):
@@ -78,8 +82,13 @@ def animation():
 	   		timewait = 1
 	   	elif timeless == 99:
 	   		timewait = 1.2
-	    # 随机元素
-	   	result = random.sample(list,1)
+	   	# 随机元素
+	   	if option.black_box_back == True:
+	   		result = random.sample(list,1)
+	   	if option.black_box_back == True and timeless == 99:
+	   		result = "['" + option.black_box_value + "']"
+	   	elif option.black_box_back == False:
+	   		result = random.sample(list,1)
 	   	print(result)
 	   	time.sleep(timewait)
 	   	os.system('clear')
@@ -100,10 +109,13 @@ def randname():
 	   if option.skip_random_animation == False:
 	    # 动画显示
 	   	result = animation()
-	   else:
+	   elif option.skip_random_animation == True:
 	    # 直接随机点名
-	   	result = random.sample(list,1)
-	   os.system('clear')
+	    if option.black_box_back == True:
+	    	result = "['"+option.black_box_value+"']"
+	    elif option.black_box_back == False:
+	    	result = random.sample(list,1)
+	    os.system('clear')
 	   # 显示结果
 	   print('抽到的是',result)
 	   gde = input('1 再抽一次  [其他] 返回')
@@ -128,10 +140,10 @@ with open('./config.txt','r') as sb:
 			list.append(charkey)
 			charkey = ""
 
-# 设置 while
+# 设置 while (废弃)
 whiles = True
 
-while whiles:
+def main():
 	os.system('clear')
 	# 显示菜单
 	print('添加、查看或删除项目')
@@ -174,8 +186,10 @@ while whiles:
 	    # 随机名
 		randname()
 	if sel == "6":
-	    # 设置 whiles 退出
-		whiles = False
+	    # 设置 whiles 退出(废弃)
+		# whiles = False
+		# exit 直接退出
+		exit()
 	if sel == "5":
 	    # 内置菜单
 		print('其他选项菜单\n1 清除列表数据文件  2 暗箱操作  3 选项  [任意] 退出')
@@ -188,12 +202,26 @@ while whiles:
 				os.remove('./config.txt')
 				# 初始重启
 				print(ct.done(),'已完成操作，请重新启动程序。')
-				whiles = False
+				# whiles = False (废弃)
+				# exit 直接退出
+				exit()
 			elif sel == 'n':
 			    # 空函数
 				em()
 		elif sel == '2':
-			em()
+			option.black_box_back = False
+			back = input('输入列表中的名字后，随机可做到100%命中该名，启动此功能时建议不要开启跳过随机动画，回车关闭暗箱操作\n')
+			for enaad_for in list:
+				if enaad_for == back:
+					option.black_box_value = back
+					print(ct.done(),'已设置暗箱操作')
+					time.sleep(0.7)
+					option.black_box_back =True
+					break
+			if option.black_box_back == False:
+				print(ct.error(),'没有找到名字，关闭暗箱操作')
+				time.sleep(0.7)
+				option.black_box_back == False
 		elif sel == '3':
 		    # 跳过随机动画
 			print('选项\n1 跳过随机动画  [任意] 返回')
@@ -209,3 +237,7 @@ while whiles:
 					em()	
 		else:
 			em()
+			
+# v1.10b 优化主程序 loop
+if __name__ == '__main__':
+	main()
